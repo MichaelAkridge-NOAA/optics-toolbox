@@ -36,9 +36,52 @@ A user-friendly, cross-platform tool to browse Google Cloud Storage buckets like
 ## 🚀 Quick Start
 
 ### Installation
+
+#### For Cloud Workstations / Managed Environments
+
+**Super Quick (One Command):**
 ```bash
-# One command installs everything you need
+# Automated install script - handles everything
+curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-cloud.sh | bash
+```
+
+**Manual Install:**
+```bash
+# Create a virtual environment (works everywhere)
+python3 -m venv optics-env
+source optics-env/bin/activate
 pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
+
+# Ready to use!
+gcs-browser browse gs://nmfs_odp_pifsc/
+gcs-browser-web
+```
+
+#### Standard Installation
+```bash
+# Try this first - works on most systems
+pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
+```
+
+### Installation Issues & Solutions
+
+#### Alternative Methods (if above doesn't work)
+
+**Option A: pipx (Isolated App Install)**
+```bash
+# Install as a standalone application
+sudo apt install pipx  # or: pip install --user pipx
+pipx ensurepath
+pipx install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
+
+# Commands available system-wide
+gcs-browser browse gs://nmfs_odp_pifsc/
+```
+
+**Option B: System Override (Cloud Workstations)**
+```bash
+# If virtual env isn't preferred on temporary cloud instances
+pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git --break-system-packages
 ```
 
 **What's included:**
@@ -217,10 +260,34 @@ gcloud init --no-launch-browser
 
 ### Common Issues
 
+**"externally-managed-environment" Error**
+This occurs on newer Linux systems (Ubuntu 22.04+, Debian 12+) that prevent system-wide pip installs:
+```bash
+# Recommended: Use virtual environment
+python3 -m venv optics-env && source optics-env/bin/activate
+pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
+
+# Alternative: Use pipx
+pipx install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
+
+# Last resort: Override (not recommended)
+pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git --break-system-packages
+```
+
 **"Import gcsfs could not be resolved"**
 ```bash
 pip install gcsfs google-cloud-storage
 ```
+
+**"RequestsDependencyWarning: Unable to find acceptable character detection"**
+```bash
+pip install charset-normalizer
+```
+
+**"gcs-browser-web shows warning about streamlit run"**
+This is normal - the command automatically launches Streamlit. If it doesn't open your browser:
+- Copy the URL shown (usually http://localhost:8501)  
+- Open it manually in your browser
 
 **"gsutil not found"**
 - Install Google Cloud SDK

@@ -413,5 +413,27 @@ def main():
                     st.rerun()
 
 
+def run_web_app():
+    """Entry point for the gcs-browser-web command"""
+    import subprocess
+    import sys
+    import os
+    
+    # Get the path to this file
+    web_script = __file__
+    
+    # Run streamlit with this script
+    cmd = [sys.executable, "-m", "streamlit", "run", web_script]
+    
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running Streamlit: {e}")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\nShutting down...")
+        sys.exit(0)
+
+
 if __name__ == "__main__":
     main()

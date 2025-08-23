@@ -7,7 +7,7 @@ from pathlib import Path
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
-# Read requirements
+# Read requirements with flexible handling
 requirements = []
 requirements_file = this_directory / "requirements.txt"
 if requirements_file.exists():
@@ -15,9 +15,15 @@ if requirements_file.exists():
         for line in f:
             line = line.strip()
             if line and not line.startswith('#'):
-                # Remove version constraints for flexibility
-                package = line.split('>=')[0].split('==')[0].split('<')[0]
-                requirements.append(package)
+                # Keep minimum version constraints for core functionality
+                # but make them more flexible
+                if '>=' in line:
+                    # Keep the minimum version requirement
+                    requirements.append(line)
+                else:
+                    # For lines without version, just add the package name
+                    package = line.split('>=')[0].split('==')[0].split('<')[0]
+                    requirements.append(package)
 
 setup(
     name="optics-toolbox",
@@ -67,7 +73,7 @@ setup(
     entry_points={
         "console_scripts": [
             "gcs-browser=gcs_browser.cli:main",
-            "gcs-browser-web=gcs_browser.web:main",
+            "gcs-browser-web=gcs_browser.web:run_web_app",
         ],
     },
     include_package_data=True,

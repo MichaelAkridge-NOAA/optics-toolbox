@@ -1,0 +1,18 @@
+# Minimal requirements for system compatibility
+# Use this if the main requirements.txt causes conflicts
+
+# Essential core dependencies (no version constraints)
+gcsfs
+google-cloud-storage
+pandas
+numpy
+python-dateutil
+tqdm
+psutil
+requests
+
+# Web interface
+streamlit
+
+# Optional enhancements (will gracefully degrade if not available)
+orjson
