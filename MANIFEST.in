@@ -1,0 +1,10 @@
+include README.md
+include LICENSE.md
+include requirements.txt
+include MANIFEST.in
+recursive-include gcs_browser *.py
+recursive-include gcs_browser *.json
+recursive-include gcs_browser *.md
+recursive-exclude gcs_browser __pycache__
+recursive-exclude gcs_browser *.pyc
+recursive-exclude gcs_browser *.pyo

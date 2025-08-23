@@ -1,0 +1,19 @@
+{
+    "default_destination": "~/Downloads/gcs_downloads",
+    "preferred_method": "gsutil",
+    "parallel_downloads": true,
+    "bandwidth_limit_mbps": 0,
+    "credentials_path": null,
+    "anonymous_access": true,
+    "chunk_size_mb": 8,
+    "max_retries": 3,
+    "common_buckets": [
+        "nmfs_odp_pifsc"
+    ],
+    "ui_settings": {
+        "page_size": 24,
+        "auto_calculate_sizes": false,
+        "show_hidden_files": false,
+        "default_file_extensions": [".jpg", ".jpeg", ".png", ".tif", ".tiff", ".txt", ".csv", ".json"]
+    }
+}
