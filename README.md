@@ -39,15 +39,19 @@ A user-friendly, cross-platform tool to browse Google Cloud Storage buckets like
 
 #### For Cloud Workstations / Managed Environments
 
-**Super Quick (One Command):**
+**Google Cloud Workstation (Recommended):**
 ```bash
-# Automated install script - handles everything
+# Install required system packages first
+sudo apt update && sudo apt install python3-venv python3-full
+
+# Then run automated install
 curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-cloud.sh | bash
 ```
 
-**Manual Install:**
+**Manual Install (if script fails):**
 ```bash
-# Create a virtual environment (works everywhere)
+# Create virtual environment
+sudo apt install python3-venv python3-full  # if not installed
 python3 -m venv optics-env
 source optics-env/bin/activate
 pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
@@ -272,6 +276,19 @@ pipx install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
 
 # Last resort: Override (not recommended)
 pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git --break-system-packages
+```
+
+**"ensurepip is not available" or "python3-venv not found"**
+On Google Cloud Workstation or Ubuntu systems:
+```bash
+# Install required packages
+sudo apt update
+sudo apt install python3-venv python3-full python3-pip
+
+# Then create virtual environment
+python3 -m venv optics-env
+source optics-env/bin/activate
+pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
 ```
 
 **"Import gcsfs could not be resolved"**
