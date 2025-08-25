@@ -36,95 +36,82 @@ A user-friendly, cross-platform tool to browse Google Cloud Storage buckets like
 ## 🚀 Quick Start
 
 ### Installation
-
-#### For Cloud Workstations / Managed Environments
-
-**Google Cloud Workstation (Recommended):**
-```bash
-# Simple one-command install (handles everything automatically)
-curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-simple.sh | bash
-
-# Then activate and use:
-source optics-env/bin/activate
-gcs-browser browse gs://nmfs_odp_pifsc/
-```
-
-**Alternative - Advanced installer:**
-```bash
-# More complex installer with fallback options
-curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-cloud.sh | bash
-```
-
-**Manual Install (if scripts fail):**
-```bash
-# Install system packages first
-sudo apt update && sudo apt install python3-venv python3-full python3-pip
-
-# Create virtual environment
-python3 -m venv optics-env
-source optics-env/bin/activate
-pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
-
-# Ready to use!
-gcs-browser browse gs://nmfs_odp_pifsc/
-gcs-browser-web
-```
-
-#### Standard Installation
 ```bash
 # Try this first - works on most systems
 pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
 ```
 
-### Installation Issues & Solutions
+### For Cloud Workstations / Managed Environments
 
-#### Alternative Methods (if above doesn't work)
-
-**Option A: pipx (Isolated App Install)**
 ```bash
-# Install as a standalone application
-sudo apt install pipx  # or: pip install --user pipx
-pipx ensurepath
-pipx install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
-
-# Commands available system-wide
-gcs-browser browse gs://nmfs_odp_pifsc/
+# Simple one-command install (handles everything automatically)
+curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-simple.sh | bash
 ```
 
-**Option B: System Override (Cloud Workstations)**
+#### Alternative: Docker Installation (Recommended for Complex Cloud Environments)
+
+If you encounter Python environment issues or want the most reliable installation:
+
 ```bash
-# If virtual env isn't preferred on temporary cloud instances
-pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git --break-system-packages
+# One-command Docker setup (installs Docker if needed)
+curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/cloud_docker_install.sh | bash
 ```
 
-**What's included:**
-- CLI tools: `gcs-browser` and `gcs-browser-web` 
-- Web interface with Streamlit
-- All core functionality for browsing and downloading
-- Performance optimizations
+This will:
+- Install Docker if not present
+- Build and run the optics-toolbox in a container
+- Set up helper scripts (`gcs-browser` and `gcs-browser-web`)
+- Access the web interface at http://localhost:8501
 
-### Web Interface
+#### Then activate and use (for non-Docker install):
+
+1. Activate the virtual environment:
+```
+   source optics-env/bin/activate
+```
+2. Use the tools:
+```
+   gcs-browser browse gs://nmfs_odp_pifsc/
+   gcs-browser-web
+```
+
+3. For private buckets, authenticate first:
+```
+   gcloud auth login
+   # or: gcloud init --no-launch-browser
+```
+
+## Startup
+###  Web Interface
 ```bash
 # Start the web interface
 gcs-browser-web
-# Open your browser to http://localhost:8501
 ```
 
-The web interface provides:
-- **Direct access to NOAA PIFSC bucket** with one click
-- **Manual bucket entry** for any other buckets
-- **Tree navigation** with breadcrumbs
-- **Multi-file/folder selection** and download
-- **Progress tracking** and error handling
+#### Accessing on Google Cloud Workstation
+When running on Google Cloud Workstation, the app will start but won't auto-open in browser. You'll see:
+```
+Local URL: http://localhost:8501
+Network URL: http://10.88.0.3:8501
+External URL: http://34.48.90.74:8501
+```
 
-### Quick Usage
+**To access the web interface:**
+1. **VS Code method**: In VS Code, go to `Ports` tab → Click `Forward a Port` → Enter `8501`
+2. **Direct access**: Click the "Open in Browser" button that appears in VS Code
+3. **Manual**: Copy the `External URL` (e.g., http://34.48.90.74:8501) and open in new browser tab
+
+#### Accessing on Local Machine
+```bash
+# Open your browser to http://localhost:8501
+# Should open automatically
+```
+
+### Quick CLI Usage
 ```bash
 # Command line interface
 gcs-browser browse gs://nmfs_odp_pifsc/
 gcs-browser download gs://nmfs_odp_pifsc/some-folder/ ./downloads/
-
-# Web interface
-gcs-browser-web
 ```
 
 ## Usage Examples
@@ -269,51 +256,46 @@ gcloud auth login
 gcloud init --no-launch-browser
 ```
 
-## Troubleshooting
-
-### Common Issues
-
-**"externally-managed-environment" Error**
-This occurs on newer Linux systems (Ubuntu 22.04+, Debian 12+) that prevent system-wide pip installs:
-```bash
-# Recommended: Use virtual environment
-python3 -m venv optics-env && source optics-env/bin/activate
-pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
-
-# Alternative: Use pipx
-pipx install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
-
-# Last resort: Override (not recommended)
-pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git --break-system-packages
-```
-
-**"ensurepip is not available" or "python3-venv not found"**
-On Google Cloud Workstation or Ubuntu systems:
-```bash
-# Install required packages
-sudo apt update
-sudo apt install python3-venv python3-full python3-pip
-
-# Then create virtual environment
-python3 -m venv optics-env
-source optics-env/bin/activate
-pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
-```
-
-**"Import gcsfs could not be resolved"**
-```bash
-pip install gcsfs google-cloud-storage
-```
-
-**"RequestsDependencyWarning: Unable to find acceptable character detection"**
-```bash
-pip install charset-normalizer
-```
+## Troubleshooting / Common Issues
 
 **"gcs-browser-web shows warning about streamlit run"**
 This is normal - the command automatically launches Streamlit. If it doesn't open your browser:
 - Copy the URL shown (usually http://localhost:8501)  
 - Open it manually in your browser
+
+**"Web interface won't load on Google Cloud Workstation"**
+The Streamlit app starts but you need to access it through port forwarding:
+1. In VS Code: Go to `Ports` tab → `Forward a Port` → Enter `8501`
+2. Click the "Open in Browser" button in VS Code
+3. Or use the External URL shown (e.g., http://YOUR-IP:8501)
+
+**"Web interface stuck at loading screen"**
+If the interface opens but stays stuck loading:
+
+**Quick fixes to try:**
+1. **Check the terminal** where `gcs-browser-web` is running for error messages
+2. **Force refresh** the page: `Ctrl+Shift+R` (or `Cmd+Shift+R` on Mac)  
+3. **Try incognito/private mode** to rule out browser cache issues
+4. **Restart the web interface**:
+   ```bash
+   # Press Ctrl+C to stop, then restart
+   source optics-env/bin/activate  # if using virtual env
+   gcs-browser-web
+   ```
+
+**For Google Cloud Workstation specifically:**
+1. **Check browser console**: Press `F12` → Console tab → look for JavaScript errors
+2. **Try different browser**: Chrome vs Firefox vs Safari
+3. **Check if app actually loaded**: Look for "Debug Info" expandable section on the page
+4. **Verify dependencies**:
+   ```bash
+   source optics-env/bin/activate
+   python -c "import streamlit, gcs_browser, pandas, gcsfs; print('✅ All dependencies OK')"
+   ```
+5. **If import errors**, reinstall:
+   ```bash
+   pip install --upgrade git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
+   ```
 
 **"gsutil not found"**
 - Install Google Cloud SDK
@@ -332,17 +314,7 @@ This is normal - the command automatically launches Streamlit. If it doesn't ope
 ## Configuration
 
 Example config file: `gcs_browser/config.example.json`
-
-Copy this file to `config.json` and edit as needed for your environment. The app will use your custom config if present.
-
-## 🤝 Contributing
-
-### Development Setup
-```bash
-git clone https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
-cd optics-toolbox
-pip install -e ".[dev]"  # Install in development mode with dev dependencies
-```
+- Copy this file to `config.json` and edit as needed for your environment. The app will use your custom config if present.
 
 ----------
 #### Disclaimer

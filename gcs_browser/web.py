@@ -5,33 +5,112 @@ Web interface for GCS Browser using Streamlit
 import streamlit as st
 from pathlib import Path
 from typing import Set
+import sys
+import traceback
 
-from .core import GCSBrowser, GCSItem, DownloadJob
-from .utils import detect_download_tools, download_with_gsutil, download_with_gcsfs
+try:
+    from .core import GCSBrowser, GCSItem, DownloadJob
+    from .utils import detect_download_tools, download_with_gsutil, download_with_gcsfs
+except ImportError as e:
+    st.error(f"Import error: {e}")
+    st.info("This usually means dependencies are not installed correctly.")
+    st.stop()
 
 
 def main():
     """Main web interface function"""
-    st.set_page_config(
-        page_title="GCS Bucket Browser & Downloader",
-        page_icon="☁️",
-        layout="wide"
-    )
+    try:
+        st.set_page_config(
+            page_title="GCS Bucket Browser & Downloader",
+            page_icon="☁️",
+            layout="wide"
+        )
+        
+        st.title("☁️ Google Cloud Storage Browser & Downloader")
+        st.markdown("Browse GCS buckets like a file tree and download files/folders with multiple methods")
+        
+        # Add debug info in expander
+        with st.expander("🐛 Debug Info (click if app seems stuck)"):
+            st.write("✅ Streamlit loaded successfully")
+            st.write(f"🐍 Python version: {sys.version}")
+            st.write("📦 Checking dependencies...")
+            
+            try:
+                import pandas
+                st.write("✅ pandas imported")
+            except ImportError as e:
+                st.error(f"❌ pandas import failed: {e}")
+                
+            try:
+                import gcsfs
+                st.write("✅ gcsfs imported")
+            except ImportError as e:
+                st.error(f"❌ gcsfs import failed: {e}")
+                
+            try:
+                import google.cloud.storage
+                st.write("✅ google-cloud-storage imported")
+            except ImportError as e:
+                st.error(f"❌ google-cloud-storage import failed: {e}")
+        
+    except Exception as e:
+        st.error(f"Error in main setup: {e}")
+        st.text("Full traceback:")
+        st.text(traceback.format_exc())
+        st.stop()
     
-    st.title("☁️ Google Cloud Storage Browser & Downloader")
-    st.markdown("Browse GCS buckets like a file tree and download files/folders with multiple methods")
+    st.write("🔄 Initializing session state...")
     
-    # Initialize session state
-    if 'browser' not in st.session_state:
-        st.session_state.browser = GCSBrowser()
-    
-    if 'connected' not in st.session_state:
-        st.session_state.connected = False
-    
-    if 'current_path' not in st.session_state:
-        st.session_state.current_path = []
+    # Initialize session state with error handling
+    try:
+        if 'browser' not in st.session_state:
+            st.write("🔧 Creating GCS Browser instance...")
+            # Add a progress bar to show it's working
+            progress = st.progress(0)
+            progress.progress(25)
+            
+            st.session_state.browser = GCSBrowser()
+            progress.progress(100)
+            st.write("✅ GCS Browser created successfully")
+            progress.empty()  # Remove progress bar
+        
+        if 'connected' not in st.session_state:
+            st.session_state.connected = False
+        
+        if 'current_path' not in st.session_state:
+            st.session_state.current_path = []
+            
+        st.write("✅ Session state initialized")
+        
+        # Clear the debug messages after successful init (keep page clean)
+        if st.session_state.get('debug_cleared', False) is False:
+            st.session_state.debug_cleared = True
+            # st.rerun()  # Uncomment this line if you want to hide debug messages after init
+        
+    except Exception as e:
+        st.error(f"Error initializing GCS Browser: {e}")
+        st.text("Full traceback:")
+        st.text(traceback.format_exc())
+        st.stop()
     
     browser = st.session_state.browser
+    st.write("🎯 Loading main interface...")
+    
+    # Add a simple test to make sure everything is working
+    st.write("🧪 Testing basic functionality...")
+    test_container = st.empty()
+    
+    try:
+        # Test that we can access browser methods
+        test_bucket = "test"
+        # This shouldn't make any network calls, just test object access
+        _ = browser.current_bucket
+        test_container.success("✅ Browser object working correctly")
+    except Exception as e:
+        test_container.error(f"❌ Browser object test failed: {e}")
+        st.stop()
+    
+    st.write("🚀 Rendering interface components...")
     
     # Sidebar for connection and settings
     with st.sidebar:
