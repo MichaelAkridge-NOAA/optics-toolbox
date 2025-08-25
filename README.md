@@ -258,6 +258,17 @@ gcloud init --no-launch-browser
 
 ## Troubleshooting / Common Issues
 
+**"gcs-browser-web shows ScriptRunContext warnings (Windows)"**
+If you see warnings like "missing ScriptRunContext" or "Session state does not function":
+
+**Try these alternatives (in order):**
+1. **Alternative launcher**: `gcs-browser-launcher` (more reliable on Windows)
+2. **Direct streamlit command**:
+   ```bash
+   python -m streamlit run gcs_browser/web.py
+   ```
+3. **Simple version**: `gcs-browser-simple` (minimal interface for debugging)
+
 **"gcs-browser-web shows warning about streamlit run"**
 This is normal - the command automatically launches Streamlit. If it doesn't open your browser:
 - Copy the URL shown (usually http://localhost:8501)  

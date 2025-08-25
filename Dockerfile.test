@@ -12,7 +12,6 @@ USER appuser
 WORKDIR /home/appuser
 
 # Install optics-toolbox
-RUN pip install --user --upgrade pip
 RUN pip install --user git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
 
 # Add user's pip bin to PATH
@@ -21,13 +20,18 @@ ENV PATH="/home/appuser/.local/bin:${PATH}"
 # Create data directories
 RUN mkdir -p /home/appuser/data/downloads /home/appuser/data/credentials
 
+# Copy test script
+COPY test_web_simple.py /home/appuser/
+
 # Expose Streamlit port
 EXPOSE 8501
 
-# Set Streamlit configuration
+# Set Streamlit configuration for better debugging
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
 ENV STREAMLIT_SERVER_PORT=8501
 ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+ENV STREAMLIT_SERVER_ENABLE_CORS=false
+ENV STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
 
-# Default command - use the more reliable launcher
-CMD ["gcs-browser-launcher"]
+# Default command - run test version first
+CMD ["python", "-m", "streamlit", "run", "test_web_simple.py", "--server.address", "0.0.0.0"]

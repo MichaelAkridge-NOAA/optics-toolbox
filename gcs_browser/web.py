@@ -494,24 +494,33 @@ def main():
 
 def run_web_app():
     """Entry point for the gcs-browser-web command"""
-    import subprocess
+    import streamlit.web.cli as stcli
     import sys
     import os
+    from pathlib import Path
     
-    # Get the path to this file
-    web_script = __file__
+    # Set up the path to this module
+    current_file = Path(__file__)
     
-    # Run streamlit with this script
-    cmd = [sys.executable, "-m", "streamlit", "run", web_script]
+    print(f"🚀 Starting GCS Browser Web Interface...")
+    print(f"📱 Access at: http://localhost:8501")  
+    print(f"🛑 Press Ctrl+C to stop")
     
     try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error running Streamlit: {e}")
-        sys.exit(1)
+        # Use streamlit's CLI directly
+        sys.argv = [
+            "streamlit", "run", str(current_file),
+            "--server.address", "0.0.0.0",
+            "--server.port", "8501"
+        ]
+        stcli.main()
     except KeyboardInterrupt:
         print("\nShutting down...")
         sys.exit(0)
+    except Exception as e:
+        print(f"Error starting Streamlit: {e}")
+        print("💡 Try running directly: python -m streamlit run gcs_browser/web.py")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

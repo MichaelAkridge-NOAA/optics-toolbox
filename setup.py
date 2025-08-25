@@ -74,6 +74,8 @@ setup(
         "console_scripts": [
             "gcs-browser=gcs_browser.cli:main",
             "gcs-browser-web=gcs_browser.web:run_web_app",
+            "gcs-browser-launcher=gcs_browser.launcher:main",
+            "gcs-browser-simple=gcs_browser.web_simple:run_simple_web_app",
         ],
     },
     include_package_data=True,
