@@ -20,16 +20,26 @@ install_system_deps() {
     
     # Check if we have sudo access
     if sudo -n true 2>/dev/null; then
+        echo "✅ Sudo access available, installing packages..."
         # Try to install python3-venv and python3-pip
         if command -v apt >/dev/null 2>&1; then
             sudo apt update -qq
+            # Get Python version and install specific venv package
+            PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+            sudo apt install -y python3-venv python3-pip python3-full python3.${PYTHON_VERSION}-venv 2>/dev/null || 
             sudo apt install -y python3-venv python3-pip python3-full 2>/dev/null || true
+            echo "✅ System packages installed"
         elif command -v yum >/dev/null 2>&1; then
             sudo yum install -y python3-venv python3-pip 2>/dev/null || true
         fi
     else
-        echo "⚠️  No sudo access. You may need to install python3-venv manually:"
-        echo "   sudo apt install python3-venv python3-full"
+        echo "⚠️  No passwordless sudo access."
+        echo "🔧 Attempting to install with user permission..."
+        # Get Python version and show exact command needed
+        PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "3.12")
+        echo "Please run this command and then re-run the installer:"
+        echo "  sudo apt update && sudo apt install python3-venv python3-full python3.${PYTHON_VERSION}-venv"
+        return 1
     fi
 }
 

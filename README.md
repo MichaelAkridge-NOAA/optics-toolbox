@@ -41,17 +41,26 @@ A user-friendly, cross-platform tool to browse Google Cloud Storage buckets like
 
 **Google Cloud Workstation (Recommended):**
 ```bash
-# Install required system packages first
-sudo apt update && sudo apt install python3-venv python3-full
+# Simple one-command install (handles everything automatically)
+curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-simple.sh | bash
 
-# Then run automated install
+# Then activate and use:
+source optics-env/bin/activate
+gcs-browser browse gs://nmfs_odp_pifsc/
+```
+
+**Alternative - Advanced installer:**
+```bash
+# More complex installer with fallback options
 curl -sSL https://raw.githubusercontent.com/MichaelAkridge-NOAA/optics-toolbox/main/install-cloud.sh | bash
 ```
 
-**Manual Install (if script fails):**
+**Manual Install (if scripts fail):**
 ```bash
+# Install system packages first
+sudo apt update && sudo apt install python3-venv python3-full python3-pip
+
 # Create virtual environment
-sudo apt install python3-venv python3-full  # if not installed
 python3 -m venv optics-env
 source optics-env/bin/activate
 pip install git+https://github.com/MichaelAkridge-NOAA/optics-toolbox.git
